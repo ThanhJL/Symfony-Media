@@ -188,4 +188,35 @@ class Book
 
         return $this;
     }
+
+    /**
+     * Récupère le dernier emprunt du livre
+     */
+    public function getLastEmprunt(): ?Emprunt
+    {
+        if ($this->emprunts->isEmpty()) {
+            return null;
+        }
+
+        // Convertir la collection en tableau et trier par date d'emprunt
+        $empruntsArray = $this->emprunts->toArray();
+        usort($empruntsArray, function($a, $b) {
+            return $b->getBorrowingDate() <=> $a->getBorrowingDate();
+        });
+
+        return $empruntsArray[0] ?? null;
+    }
+
+    /**
+     * Vérifie si le livre est actuellement emprunté
+     */
+    public function isCurrentlyBorrowed(): bool
+    {
+        foreach ($this->emprunts as $emprunt) {
+            if ($emprunt->isStatus()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

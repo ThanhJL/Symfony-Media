@@ -3,13 +3,14 @@
 {% block title %}Book index{% endblock %}
 
 {% block body %}
-    <h1>Liste des oeuvres</h1>
+    <div class="container mt-4">
 
-    <table class="table">
-        <thead>
+    <h1 class="mb-4">Liste des œuvres</h1>
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
             <tr>
-                <th>Id</th>
-                <th>Nom d'oeuvre</th>
+                <th>Nom d'œuvre</th>
                 <th>Type</th>
                 <th>Auteur</th>
                 <th>Année</th>
@@ -22,40 +23,56 @@
         <tbody>
         {% for book in books %}
             <tr>
-                <td>{{ book.id }}</td>
                 <td>{{ book.title }}</td>
                 <td>{{ book.type }}</td>
                 <td>{{ book.author }}</td>
-                <td>{{ book.year ? book.year|date('Y-m-d') : '' }}</td>
-                <td>{{ book.description }}</td>
-                <td> <img src="{{ asset('uploads/' ~ book.image) }}" alt="{{ book.title }}" width="150"> </td>
+                <td>{{ book.year ? book.year|date('Y') : '' }}</td>
+                <td>{{ book.description|slice(0, 50) ~ (book.description|length > 50 ? '...' : '') }}</td>
                 <td>
-                    <a href="{{ path('app_book_show', {'id': book.id}) }}">show</a>
-                    <a href="{{ path('app_book_edit', {'id': book.id}) }}">edit</a>
+                    {% if book.image %}
+                        <img src="{{ asset('uploads/' ~ book.image) }}" alt="{{ book.title }}" class="img-thumbnail" style="max-width: 120px;">
+                    {% endif %}
                 </td>
-                <td> 
-                    {% for emprunt in book.emprunts %}
-                        {{ emprunt.status ? 'Emprunt' : 'Retour' }}
-                    {% endfor %}
+                <td>
+                    <a href="{{ path('app_book_show', {'id': book.id}) }}" class="btn btn-sm btn-info">Voir</a>
+                </td>
+                <td>
+                    {% if book.isCurrentlyBorrowed %}
+                        <span class="badge bg-warning text-dark">Emprunté</span>
+                    {% else %}
+                        <span class="badge bg-success">Disponible</span>
+                    {% endif %}
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="7">no records found</td>
+                <td colspan="8" class="text-center">Aucune œuvre trouvée</td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
 
-    <a href="{{ path('app_book_new') }}">Créer un nouveau</a>
+    <nav aria-label="Pagination">
+        <ul class="pagination justify-content-center">
+            {% if page > 1 %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('app_book_index', {page: page - 1}) }}">Précédente</a>
+                </li>
+            {% endif %}
 
-    <div>
-        {% if page > 1 %}
-            <a href="{{ path('app_book_index', {page: page - 1}) }}"> Page précédente </a>
-        {% endif %}
+            {% for p in 1..maxPages %}
+                <li class="page-item {{ p == page ? 'active' : '' }}">
+                    <a class="page-link" href="{{ path('app_book_index', {page: p}) }}">{{ p }}</a>
+                </li>
+            {% endfor %}
 
-        {% if page < maxPages %}
-            <a href="{{ path('app_book_index', {page: page + 1}) }}"> Page suivante </a>
-        {% endif %}
-    </div>
+            {% if page < maxPages %}
+                <li class="page-item">
+                    <a class="page-link" href="{{ path('app_book_index', {page: page + 1}) }}">Suivante</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+
+</div>
 {% endblock %}
