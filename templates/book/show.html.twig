@@ -1,0 +1,68 @@
+{% extends 'home.html.twig' %}
+
+{% block title %}Book{% endblock %}
+
+{% block body %}
+    <h1>Liste</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ book.id }}</td>
+            </tr>
+            <tr>
+                <th>Image</th>
+                <td> <img src="{{ asset('uploads/' ~ book.image) }}" alt="{{ book.title }}" width="300"> </td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ book.title }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ book.type }}</td>
+            </tr>
+            <tr>
+                <th>Auteur</th>
+                <td>{{ book.author }}</td>
+            </tr>
+            <tr>
+                <th>Année</th>
+                <td>{{ book.year ? book.year|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td>{{ book.description }}</td>
+            </tr>
+
+            <tr>
+                <th> Statut </th>
+                <td> 
+                    {% for emprunt in book.emprunts %}
+                        {{ emprunt.status ? 'Emprunt' : 'Retour' }}<br>
+                    {% endfor %}
+                </td>
+            </tr>
+
+            <tr>
+                <th> Commentaire </th>
+                <td> 
+                    {% for comment in book.comments %}
+                        {{ comment.content }} par {{comment.user.username}} <br>
+                    {% else %}
+                        <p>Aucun commentaire pour ce livre.</p>
+                    {% endfor %}
+                </td>
+            </tr>
+        </tbody>
+
+    </table>
+
+
+    <a href="{{ path('app_book_index') }}">retour à la liste</a>
+
+    <a href="{{ path('app_book_edit', {'id': book.id}) }}">edit</a>
+
+    {{ include('book/_delete_form.html.twig') }}
+{% endblock %}
