@@ -2,6 +2,8 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Book;
+use App\Entity\Comment;
 use App\Entity\Emprunt;
 use App\Entity\User;
 use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminDashboard;
@@ -30,6 +32,7 @@ class DashboardController extends AbstractDashboardController
         yield MenuItem::linkToDashboard('Dashboard', 'fa fa-home');
         yield MenuItem::linkToCrud('Utilisateur', 'fas fa-user', User::class);
         yield MenuItem::linkToCrud('Emprunt', 'fas fa-bookmark', Emprunt::class);
-
+        yield MenuItem::linkToCrud('Ouvrage', 'fas fa-bookmark', Book::class);
+        yield MenuItem::linkToCrud('Commentaires', 'fas fa-bookmark', Comment::class);
     }
 }
